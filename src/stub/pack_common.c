@@ -345,8 +345,8 @@ static void *map_loader(Elf_Ehdr *elf, Elf_Phdr *phs, void **interpr_base_p){
 	}
 #endif
 	if (fd <0){
-		myprintf("Could not open interpreter %s (%d), mismatch 32/64 bits ?\n",
-			interp, fd);
+		//myprintf("Could not open interpreter %s (%d), mismatch 32/64 bits ?\n",
+			//interp, fd);
 		exit(1);
 	}
 	read(fd, header, 1024);
@@ -362,7 +362,7 @@ static void *map_loader(Elf_Ehdr *elf, Elf_Phdr *phs, void **interpr_base_p){
 	interp_base = mmap(NULL, len , PROT_READ|PROT_WRITE,
 			MAP_PRIVATE | MP_MAP_ANON, -1, 0);
 	if (interp_base == NULL){
-		myprintf("mapping error\n");
+		//myprintf("mapping error\n");
 		return NULL;
 	}
 #ifdef LOADER_DEBUG
@@ -417,7 +417,7 @@ static void *map_loader(Elf_Ehdr *elf, Elf_Phdr *phs, void **interpr_base_p){
 					MAP_PRIVATE |MAP_FIXED,
 					fd, PAGE_ALIGN_DOWN(phs[i].p_offset));
 				if (ret == NULL){
-					myprintf("mapping error\n");
+					//myprintf("mapping error\n");
 					return NULL;
 				}
 #ifdef LOADER_DEBUG
@@ -538,7 +538,7 @@ static void ask_password(char *pwd, size_t len){
 	size_t i;
 	int rc;
 	struct termios term;
-	myprintf("Password: ");
+	myprintf("P: ");
 	ioctl(0, IO_GET, &term);
 	term.c_lflag &= ~ECHO;
 	ioctl(0, IO_SET, &term);
@@ -620,10 +620,10 @@ static void decrypt_curve25519(uint8_t *encryptkey, uint8_t *IV, uint8_t *integr
 	print_key("authentication", req.authentication, sizeof(req.authentication));
 #endif
 	b64_encode(buffer, sizeof(buffer), (uint8_t *)&req, sizeof(req));
-	myprintf("challenge:\n%s\n", buffer);
+	//myprintf("challenge:\n%s\n", buffer);
 	rc = read(0, buffer, sizeof(buffer) -1);
 	if(rc <= 0){
-		myprintf("Reading fail\n");
+		//myprintf("Reading fail\n");
 		exit(1);
 	}
 	buffer[rc]=0;
@@ -637,7 +637,7 @@ static void decrypt_curve25519(uint8_t *encryptkey, uint8_t *IV, uint8_t *integr
 
 	if(memcmp(authentication, reply.authentication,
 			sizeof(reply.authentication)) != 0){
-		myprintf("Curve25519 key exchange failed !\n");
+		//myprintf("Curve25519 key exchange failed !\n");
 		exit(1);
 	}
 
@@ -685,7 +685,7 @@ static void decrypt(){
 	print_key("calculated checksum", checksum, 32);
 #endif
 	if(memcmp(checksum, descriptor.checksum, SHA256_DIGEST_LEN) != 0){
-			myprintf("Integrity error. Good password ?\n");
+			//myprintf("Integrity error. Good password ?\n");
 			exit(1);
 	}
 	ZERO(encryptkey);
@@ -705,7 +705,7 @@ void *get_oep(char **base){
 	void *ret;
 	void *program_base = NULL;
 
-	myprintf("starting stub ...\n" );
+//	myprintf("starting stub ...\n" );
 	init_constants();
 	auxv = find_auxv(base);
 
